@@ -153,6 +153,12 @@ main {
 	overflow-y: auto;
 	padding: 1em;
 }
+.loader {
+	display: flex;
+	height: 100%;
+	align-items: center;
+	color: black;
+}
 h1 {
 	margin: 0;
 	text-align: left;
