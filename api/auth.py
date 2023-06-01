@@ -5,6 +5,8 @@ from models import User, Sample
 from __init__ import db
 from sqlalchemy import func
 import jwt
+import requests
+import random
 from config import SECRET_KEY
 from functools import wraps
 auth = Blueprint('auth', __name__)
@@ -166,3 +168,31 @@ def get_records():
     }
     return make_response(jsonify(response), 200)
     # Return the processed data to the frontend in JSON format
+
+
+employment_type = ["Full-time", "Part-time",
+                   "Internship", "Daily Wage", "Unemployed"]
+
+
+@auth.route('/users', methods=['GET'])
+def get_users():
+    from models import Sample
+    number_of_users = 100  # Number of users to retrieve
+    api_endpoint = f'https://randomuser.me/api/?results={number_of_users}'
+
+    response = requests.get(api_endpoint)
+    data = response.json()
+
+    for result in data['results']:
+        sample = {
+            'gender': result['gender'],
+            'nationality': result['nat'],
+            # couldn't find api with employement_type so using a random data
+            'employement_type': random.choice(employment_type),
+            'age': result['dob']['age']
+        }
+        new_sample = Sample(gender=sample['gender'], nationality=sample['nationality'],
+                            employment_type=sample['employement_type'], age=sample['age'])  # add the new user to the db
+        db.session.add(new_sample)
+        db.session.commit()
+    return get_records()
