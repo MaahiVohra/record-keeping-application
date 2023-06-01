@@ -18,13 +18,13 @@ def protected_route(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         token = None
-        if "routerorization" in request.headers:
-            token = request.headers["routerorization"].split(" ")[1]
+        if "authorization" in request.headers:
+            token = request.headers["authorization"].split(" ")[1]
         if not token:
             return {
-                "message": "routerentication Token is missing!",
+                "message": "authentication Token is missing!",
                 "data": None,
-                "error": "Unrouterorized"
+                "error": "Unauthorized"
             }, 401
         try:
             data = jwt.decode(
@@ -32,9 +32,9 @@ def protected_route(f):
             current_user = User.query.filter_by(email=data["email"]).first()
             if not current_user:
                 return {
-                    "message": "Invalid routerentication token!",
+                    "message": "Invalid authentication token!",
                     "data": None,
-                    "error": "Unrouterorized"
+                    "error": "Unauthorized"
                 }, 401
         except Exception as e:
             return {
