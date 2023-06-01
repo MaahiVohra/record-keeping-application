@@ -54,8 +54,9 @@ export default function Dashboard() {
 		const url = `${API_URL}/users`;
 		fetch(url, requestOptions)
 			.then((response) => response.json())
-			.then(() => {
-				getRecords();
+			.then((data) => {
+				setRecords(data);
+				setIsLoading(false);
 			})
 			.catch((error) => {
 				console.error(error);
