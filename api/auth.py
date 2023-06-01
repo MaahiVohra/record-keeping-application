@@ -160,7 +160,7 @@ def get_records():
         "data": {
             "Gender": gender_counts,
             "Nationality": nationality_counts,
-            "Employment_Type": employment_type_counts,
+            "Employment Type": employment_type_counts,
             "Age": age_categories
         }
     }
