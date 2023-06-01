@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify, make_response, abort
+from flask import Blueprint, request, jsonify, make_response
 from werkzeug.security \
     import generate_password_hash, check_password_hash
 from models import User, Sample
@@ -9,7 +9,7 @@ import requests
 import random
 from config import SECRET_KEY
 from functools import wraps
-auth = Blueprint('auth', __name__)
+router = Blueprint('router', __name__)
 
 # Decorator to create a protected route
 
@@ -18,13 +18,13 @@ def protected_route(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         token = None
-        if "Authorization" in request.headers:
-            token = request.headers["Authorization"].split(" ")[1]
+        if "routerorization" in request.headers:
+            token = request.headers["routerorization"].split(" ")[1]
         if not token:
             return {
-                "message": "Authentication Token is missing!",
+                "message": "routerentication Token is missing!",
                 "data": None,
-                "error": "Unauthorized"
+                "error": "Unrouterorized"
             }, 401
         try:
             data = jwt.decode(
@@ -32,9 +32,9 @@ def protected_route(f):
             current_user = User.query.filter_by(email=data["email"]).first()
             if not current_user:
                 return {
-                    "message": "Invalid Authentication token!",
+                    "message": "Invalid routerentication token!",
                     "data": None,
-                    "error": "Unauthorized"
+                    "error": "Unrouterorized"
                 }, 401
         except Exception as e:
             return {
@@ -49,7 +49,7 @@ def protected_route(f):
     return decorated
 
 
-@auth.route('/login', methods=['GET', 'POST'])
+@router.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':  # if the request is a GET we return the login page
         return "Hello from the login page"
@@ -86,7 +86,7 @@ def login():
         return make_response(jsonify(response), status_code)
 
 
-@auth.route('/register', methods=['GET', 'POST'])
+@router.route('/register', methods=['GET', 'POST'])
 def signup():
     if request.method == 'GET':  # If the request is GET we return the
         return "Hello from the signup page"
@@ -117,7 +117,7 @@ def signup():
         return make_response(jsonify(response), status_code)
 
 
-@auth.route('/getRecords', methods=['GET'])
+@router.route('/getRecords', methods=['GET'])
 @protected_route
 def get_records():
     # Protected route code
@@ -174,7 +174,7 @@ employment_type = ["Full-time", "Part-time",
                    "Internship", "Daily Wage", "Unemployed"]
 
 
-@auth.route('/users', methods=['GET'])
+@router.route('/users', methods=['GET'])
 def get_users():
     from models import Sample
     number_of_users = 100  # Number of users to retrieve
