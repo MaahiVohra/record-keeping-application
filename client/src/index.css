@@ -1,0 +1,172 @@
+:root {
+	font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+	line-height: 1.5;
+	font-weight: 400;
+	background-color: white;
+	text-align: center;
+
+	font-synthesis: none;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-text-size-adjust: 100%;
+}
+html,
+body {
+	text-align: center;
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+}
+.login-container {
+	display: flex;
+	justify-content: center;
+	height: 100vh;
+	align-items: center;
+}
+.login-card {
+	display: flex;
+	flex-direction: column;
+	color: #1c1c1c;
+}
+.login-card > h1 {
+	text-align: center;
+}
+.login-card > input {
+	padding: 1em 1.5em;
+	margin: 0.5em;
+	border-radius: 1em;
+	background-color: white;
+	outline: none;
+	border: 2px solid gray;
+	font-size: 1em;
+	color: #1c1c1c;
+}
+.login-card > button {
+	color: white;
+	padding: 1em 1.5em;
+	font-size: 1em;
+	margin: 0.5em;
+	border-radius: 3em;
+	border: none;
+	background-color: #112d4e;
+	cursor: pointer;
+	transition: all 0.2s;
+}
+.login-card > button:hover {
+	background-color: #13355c;
+}
+.login-card > p {
+	margin: 0.5em;
+}
+.login-card > p > span {
+	color: #3f72af;
+	font-weight: 500;
+	cursor: pointer;
+}
+.github-logo {
+	position: absolute;
+	right: 1em;
+	bottom: 1em;
+}
+#error-page {
+	color: black;
+}
+.logo {
+	font-size: 2em;
+	font-weight: bold;
+}
+.navbar {
+	position: sticky;
+	top: 0;
+	background-color: #1c1c1c;
+	margin: 0;
+	display: flex;
+	justify-content: space-between;
+	padding: 1em 3em;
+	align-items: center;
+	color: white;
+	max-height: 2em;
+}
+.navbar > div {
+	display: flex;
+	align-items: center;
+}
+.navbar > div > span {
+	margin: 0 1em;
+}
+.logout {
+	padding: 0.5em 1em;
+	border: none;
+	background-color: #ffbb28;
+	border-radius: 0.25em;
+	cursor: pointer;
+	font-size: 1em;
+	color: white;
+}
+.logout:hover {
+	background-color: #e4a825;
+}
+.app-container {
+	display: flex;
+	flex-direction: column;
+	height: 100vh;
+}
+.content-container {
+	display: flex;
+	flex: 1;
+	overflow-y: hidden;
+}
+.sidebar {
+	background-color: #ffbb28;
+	max-width: 10em;
+	border-right: 1px solid gray;
+	font-size: 1.125em;
+}
+.sidebar > span {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	list-style: none;
+	border-bottom: 1px solid gray;
+	padding: 0.5em 2em;
+}
+.sidebar > span:hover {
+	background-color: #e4a825;
+}
+main {
+	flex: 1;
+	color: white;
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+	width: 100%;
+	overflow-y: auto;
+	padding: 1em;
+}
+h1 {
+	margin: 0;
+	text-align: left;
+}
+.chart-container {
+	border-radius: 2em;
+	width: 100%;
+	background-color: rgb(132, 138, 145);
+	padding: 1em;
+}
+.chart-container > section {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 1em;
+	border-bottom: 2px solid white;
+}
+.sort-type,
+.sort-values {
+	min-width: 15em;
+}
+.record-values {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+}

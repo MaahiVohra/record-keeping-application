@@ -1,11 +1,50 @@
-from flask import Blueprint, request, jsonify, make_response
+from flask import Blueprint, request, jsonify, make_response, abort
 from werkzeug.security \
     import generate_password_hash, check_password_hash
-from models import User
+from models import User, Sample
 from __init__ import db
+from sqlalchemy import func
 import jwt
 from config import SECRET_KEY
+from functools import wraps
 auth = Blueprint('auth', __name__)
+
+# Decorator to create a protected route
+
+
+def protected_route(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = None
+        if "Authorization" in request.headers:
+            token = request.headers["Authorization"].split(" ")[1]
+        if not token:
+            return {
+                "message": "Authentication Token is missing!",
+                "data": None,
+                "error": "Unauthorized"
+            }, 401
+        try:
+            data = jwt.decode(
+                token, SECRET_KEY, algorithms=["HS256"])
+            current_user = User.query.filter_by(email=data["email"]).first()
+            if not current_user:
+                return {
+                    "message": "Invalid Authentication token!",
+                    "data": None,
+                    "error": "Unauthorized"
+                }, 401
+        except Exception as e:
+            return {
+                "message": "Something went wrong",
+                "data": None,
+                "error": str(e),
+                "current_user": current_user.email
+            }, 500
+
+        return f(*args, **kwargs)
+
+    return decorated
 
 
 @auth.route('/login', methods=['GET', 'POST'])
@@ -31,7 +70,13 @@ def login():
                 payload = {'email': email}
                 token = jwt.encode(
                     payload, SECRET_KEY, algorithm='HS256')
-                response = {"message": "User Login Success", "token": token}
+
+                response = {"message": "User Login Success",
+                            "token": token, "user": {
+                                "id": user.id,
+                                "name": user.name,
+                                "email": user.email
+                            }}
                 status_code = 200
         else:
             response = {"message": "Bad Request"}
@@ -39,7 +84,7 @@ def login():
         return make_response(jsonify(response), status_code)
 
 
-@auth.route('/signup', methods=['GET', 'POST'])
+@auth.route('/register', methods=['GET', 'POST'])
 def signup():
     if request.method == 'GET':  # If the request is GET we return the
         return "Hello from the signup page"
@@ -68,3 +113,56 @@ def signup():
             response = {"message": "Bad Request"}
             status_code = 400
         return make_response(jsonify(response), status_code)
+
+
+@auth.route('/getRecords', methods=['GET'])
+@protected_route
+def get_records():
+    # Protected route code
+
+    # Retrieve records from the database and process the data
+    total_records = Sample.query.count()
+    # Retrieve the count of distinct values for each variable
+    gender_count = db.session.query(Sample.gender, func.count(
+        Sample.gender)).group_by(Sample.gender).all()
+    nationality_count = db.session.query(Sample.nationality, func.count(
+        Sample.nationality)).group_by(Sample.nationality).all()
+    employment_type_count = db.session.query(Sample.employment_type, func.count(
+        Sample.employment_type)).group_by(Sample.employment_type).all()
+    age_count = db.session.query(Sample.age, func.count(
+        Sample.age)).group_by(Sample.age).all()
+
+    # Format the results as dictionaries
+    gender_counts = {row[0]: row[1] for row in gender_count}
+    nationality_counts = {row[0]: row[1] for row in nationality_count}
+    employment_type_counts = {row[0]: row[1] for row in employment_type_count}
+    age_counts = {row[0]: row[1] for row in age_count}
+    age_categories = {
+        "<18": 0,
+        "18-40": 0,
+        "40-60": 0,
+        ">60": 0
+    }
+
+    for age, count in age_counts.items():
+        age = int(age)  # Convert age from string to integer
+        if age < 18:
+            age_categories["<18"] += count
+        elif 18 <= age < 40:
+            age_categories["18-40"] += count
+        elif 40 <= age < 60:
+            age_categories["40-60"] += count
+        else:
+            age_categories[">60"] += count
+    # Return the counts to the frontend
+    response = {
+        "total_records": total_records,
+        "data": {
+            "Gender": gender_counts,
+            "Nationality": nationality_counts,
+            "Employment_Type": employment_type_counts,
+            "Age": age_categories
+        }
+    }
+    return make_response(jsonify(response), 200)
+    # Return the processed data to the frontend in JSON format
