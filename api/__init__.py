@@ -15,8 +15,8 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.init_app(app)  # Initialiaze sqlite database
-    from auth import auth as auth_blueprint
-    app.register_blueprint(auth_blueprint)
+    from router import router as router_blueprint
+    app.register_blueprint(router_blueprint)
     from main import main as main_blueprint
     app.register_blueprint(main_blueprint)
     return app
