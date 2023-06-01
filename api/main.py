@@ -5,7 +5,7 @@ main = Blueprint('main', __name__)
 
 @main.route('/')  # home page for the api server
 def index():
-    return "Hello from the login-api"
+    return "Hello from the api"
 
 
 app = create_app()
