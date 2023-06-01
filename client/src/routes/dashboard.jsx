@@ -15,6 +15,9 @@ export default function Dashboard() {
 	} = useContext(AppContext);
 	const [records, setRecords] = useState(null);
 	useEffect(() => {
+		getRecords();
+	}, []);
+	function getRecords() {
 		setIsLoading(true);
 		const requestOptions = {
 			method: "GET",
@@ -32,8 +35,9 @@ export default function Dashboard() {
 				setIsLoading(false);
 			})
 			.catch((error) => console.error(error));
-	}, []);
+	}
 	function increaseSample() {
+		setIsLoading(true);
 		const requestOptions = {
 			method: "GET",
 			headers: {
@@ -45,7 +49,7 @@ export default function Dashboard() {
 		fetch(url, requestOptions)
 			.then((response) => response.json())
 			.then(() => {
-				window.location.reload();
+				getRecords();
 			})
 			.catch((error) => console.error(error));
 	}

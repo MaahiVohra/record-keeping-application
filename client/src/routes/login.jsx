@@ -14,6 +14,7 @@ export default function Login() {
 	} = useContext(AppContext);
 	const navigate = useNavigate();
 	const [onLoginPage, setOnLoginPage] = useState(true);
+	const [error, setError] = useState(null);
 	const nameRef = useRef();
 	const emailRef = useRef();
 	const passwordRef = useRef();
@@ -24,6 +25,7 @@ export default function Login() {
 	}, []);
 	async function login(e) {
 		setIsLoading(true);
+		setError(null);
 		e.preventDefault();
 		if (!emailRef.current.value || !passwordRef.current.value) return;
 		const data = {
@@ -31,19 +33,22 @@ export default function Login() {
 			password: passwordRef.current.value,
 		};
 		const response = await postData("login", data);
+		const response_json = await response.json();
 		if (response.status === 200) {
-			const response_json = await response.json();
 			setUser(response_json.user);
 			setIsSignedIn(true);
 			setToken(response_json.token);
 			localStorage.setItem("TOKEN", response_json.token);
 			localStorage.setItem("USER", JSON.stringify(response_json.user));
-			// navigate("/dashboard");
+			navigate("/dashboard");
 		}
+		setError(response_json.message);
 		setIsLoading(false);
 	}
 	async function register(e) {
 		setIsLoading(true);
+		setError(null);
+
 		e.preventDefault();
 		if (
 			!nameRef.current.value ||
@@ -60,6 +65,9 @@ export default function Login() {
 		if (response.status === 200) {
 			login(e);
 		}
+		const response_json = await response.json();
+		setError(response_json.message);
+		setIsLoading(false);
 	}
 
 	async function postData(endpoint, data) {
@@ -80,6 +88,7 @@ export default function Login() {
 				<h1 className="heading">
 					{onLoginPage ? "Login" : "Register"}
 				</h1>
+				{error !== null && <div className="error">{error}</div>}
 				{!onLoginPage && (
 					<input type="text" placeholder="Username" ref={nameRef} />
 				)}
