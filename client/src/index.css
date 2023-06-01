@@ -182,7 +182,7 @@ h1 {
 }
 .sort-type,
 .sort-values {
-	min-width: 15em;
+	min-width: 20em;
 }
 .record-values {
 	display: grid;
