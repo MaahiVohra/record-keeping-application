@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect } from "react";
 import Piechart from "../components/Piechart";
 import { AppContext } from "../context";
-const API_URL = `http://localhost:5000`;
+const API_URL = import.meta.env.VITE_API_URL;
 export default function Dashboard() {
 	const { user, setUser, setToken, setIsSignedIn, token } =
 		useContext(AppContext);
