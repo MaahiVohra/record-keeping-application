@@ -14,7 +14,9 @@ export default function Dashboard() {
 		setIsLoading,
 	} = useContext(AppContext);
 	const [records, setRecords] = useState(null);
+	const [error, setError] = useState(null);
 	useEffect(() => {
+		setError(null);
 		getRecords();
 	}, []);
 	function getRecords() {
@@ -34,7 +36,11 @@ export default function Dashboard() {
 				setRecords(data);
 				setIsLoading(false);
 			})
-			.catch((error) => console.error(error));
+			.catch((error) => {
+				console.error(error);
+				setError("Error: Failed to get records.");
+				setIsLoading(false);
+			});
 	}
 	function increaseSample() {
 		setIsLoading(true);
@@ -51,7 +57,11 @@ export default function Dashboard() {
 			.then(() => {
 				getRecords();
 			})
-			.catch((error) => console.error(error));
+			.catch((error) => {
+				console.error(error);
+				setError("Error: Failed to get records.");
+				setIsLoading(false);
+			});
 	}
 	function logout() {
 		setUser(null);
@@ -76,10 +86,20 @@ export default function Dashboard() {
 					<aside className="sidebar">
 						<span>DASHBOARD</span>
 					</aside>
-					{isLoading ? (
-						<Loader />
-					) : (
-						<main>
+					<main>
+						{isLoading || error !== null ? (
+							<div className="loader">
+								{error !== null ? (
+									<span>{error}</span>
+								) : (
+									<Loader
+										color="black"
+										width={50}
+										height={50}
+									/>
+								)}
+							</div>
+						) : (
 							<div className="chart-container">
 								<div className="chart-header">
 									<h1>KEY PERFORMANCE INDICATORS</h1>
@@ -125,8 +145,8 @@ export default function Dashboard() {
 										)
 									)}
 							</div>
-						</main>
-					)}
+						)}
+					</main>
 				</div>
 			</div>
 		</>

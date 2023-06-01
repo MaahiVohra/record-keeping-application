@@ -101,11 +101,11 @@ export default function Login() {
 				/>
 				{onLoginPage ? (
 					<button className="login-btn" onClick={(e) => login(e)}>
-						{isLoading ? <Loader /> : "Login"}
+						{isLoading ? <Loader color="#fff" /> : "Login"}
 					</button>
 				) : (
 					<button className="login-btn" onClick={(e) => register(e)}>
-						{isLoading ? <Loader /> : "Register"}
+						{isLoading ? <Loader color="#fff" /> : "Register"}
 					</button>
 				)}
 				{onLoginPage ? (
