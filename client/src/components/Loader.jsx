@@ -1,11 +1,11 @@
-export default function Loader() {
+export default function Loader({ color, width = 20, height = 20 }) {
 	return (
 		<svg
-			width="20"
-			height="20"
+			width={width}
+			height={height}
 			viewBox="0 0 40 50"
 			xmlns="http://www.w3.org/2000/svg"
-			stroke="#fff">
+			stroke={color}>
 			<g fill="none" fillRule="evenodd">
 				<g transform="translate(1 1)" strokeWidth="2">
 					<circle strokeOpacity=".5" cx="18" cy="18" r="18" />
